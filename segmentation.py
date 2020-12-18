@@ -17,7 +17,6 @@ def ParseArgs():
 
     parser.add_argument("image_path", help="$HOME/Desktop/data/kits19/case_00000/imaging.nii.gz")
     parser.add_argument("modelweightfile", help="Trained model weights file (*.hdf5).")
-    parser.add_argument("liver_path", help="$HOME/Desktop/data/kits19/case_00000/lver.nii.gz")
     parser.add_argument("save_path", help="Segmented label file.(.mha)")
     parser.add_argument("--mask_path", help="$HOME/Desktop/data/kits19/case_00000/mask.mha")
     parser.add_argument("--image_patch_size", help="48-48-16", default="44-44-28")
@@ -35,7 +34,6 @@ def main(args):
     """ Slice module. """
 
     image = sitk.ReadImage(args.image_path)
-    liver = sitk.ReadImage(args.liver_path)
     if args.mask_path is not None:
         mask = sitk.ReadImage(args.mask_path)
     else:
@@ -53,10 +51,9 @@ def main(args):
     """ Get the patch size from string."""
     label_patch_size = getSizeFromString(args.label_patch_size)
 
-    cogc = CenterOfGravityCaluculater(liver)
-    liver_center = cogc.execute()
 
-    print("Liver center: ", liver_center)
+    center = [0., 0., 0.]
+    print("Center: ", center)
     
     iace = ImageAndCoordinateExtractor(
             image = image, 
@@ -65,7 +62,7 @@ def main(args):
             image_array_patch_size = image_patch_size, 
             label_array_patch_size = label_patch_size, 
             overlap = args.overlap, 
-            center = liver_center
+            center = center
             )
 
     iace.execute()

@@ -10,7 +10,6 @@ def ParseArgs():
 
     parser.add_argument("image_path", help="$HOME/Desktop/data/kits19/case_00000/imaging.nii.gz")
     parser.add_argument("label_path", help="$HOME/Desktop/data/kits19/case_00000/segmentation.nii.gz")
-    parser.add_argument("liver_path", help="$HOME/Desktop/data/kits19/case_00000/liver.mha")
     parser.add_argument("save_path", help="$HOME/Desktop/data/slice/hist_0.0/case_00000", default=None)
     parser.add_argument("--mask_path", help="$HOME/Desktop/data/kits19/case_00000/label.mha")
     parser.add_argument("--image_patch_size", help="48-48-16", default="16-48-48")
@@ -25,7 +24,6 @@ def main(args):
     """ Read image and label. """
     label = sitk.ReadImage(args.label_path)
     image = sitk.ReadImage(args.image_path)
-    liver = sitk.ReadImage(args.liver_path)
     if args.mask_path is not None:
         mask = sitk.ReadImage(args.mask_path)
     else:
@@ -35,14 +33,12 @@ def main(args):
     image_patch_size = getSizeFromString(args.image_patch_size)
     label_patch_size = getSizeFromString(args.label_patch_size)
 
-    cogc = CenterOfGravityCaluculater(liver)
-    liver_center = cogc.execute()
-
-    print("Liver center", liver_center)
+    center = [0., 0., 0.]
+    print("Center: {}".format(center)
     iace = ImageAndCoordinateExtractor(
             image = image, 
             label = label,
-            center = liver_center,
+            center = center,
             mask = mask,
             image_array_patch_size = image_patch_size,
             label_array_patch_size = label_patch_size,

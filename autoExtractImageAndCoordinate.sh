@@ -30,7 +30,6 @@ readonly NUM_ARRAY=$(cat ${JSON_FILE} | jq -r ".num_array[]")
 readonly LOG_FILE=$(eval echo $(cat ${JSON_FILE} | jq -r ".log_file"))
 readonly IMAGE_NAME=$(cat ${JSON_FILE} | jq -r ".image_name")
 readonly LABEL_NAME=$(cat ${JSON_FILE} | jq -r ".label_name")
-readonly LIVER_NAME=$(cat ${JSON_FILE} | jq -r ".liver_name")
 readonly MASK_NAME=$(cat ${JSON_FILE} | jq -r ".mask_name")
 
 echo "DATA_DIRECTORY:${DATA_DIRECTORY}"
@@ -46,12 +45,10 @@ do
  data="${DATA_DIRECTORY}/case_${number}"
  image="${data}/${IMAGE_NAME}"
  label="${data}/${LABEL_NAME}"
- liver="${data}/${LIVER_NAME}"
  save="${SAVE_DIRECTORY}/case_${number}"
 
  echo "Image:${image}"
  echo "Label:${label}"
- echo "Liver:${liver}"
  echo "Save:${save}"
  echo "IMAGE_PATCH_SIZE:${IMAGE_PATCH_SIZE}"
  echo "LABEL_PATCH_SIZE:${LABEL_PATCH_SIZE}"
@@ -72,7 +69,7 @@ do
   nonmask=""
  fi
 
- python3 extractImageAndCoordinate.py ${image} ${label} ${liver} ${save} --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap ${OVERLAP} ${mask} ${nonmask}
+ python3 extractImageAndCoordinate.py ${image} ${label} ${save} --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap ${OVERLAP} ${mask} ${nonmask}
 
  # Judge if it works.
  if [ $? -eq 0 ]; then
