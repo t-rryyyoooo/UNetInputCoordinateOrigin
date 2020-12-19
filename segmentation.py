@@ -5,7 +5,6 @@ import argparse
 from functions import createParentPath, getImageWithMeta, getSizeFromString
 from pathlib import Path
 from imageAndCoordinateExtractor import ImageAndCoordinateExtractor
-from centerOfGravityCaluculater import CenterOfGravityCaluculater
 from tqdm import tqdm
 import torch
 import cloudpickle

@@ -2,7 +2,6 @@ import argparse
 from pathlib import Path
 import SimpleITK as sitk
 from imageAndCoordinateExtractor import ImageAndCoordinateExtractor
-from centerOfGravityCaluculater import CenterOfGravityCaluculater
 from functions import getImageWithMeta, getSizeFromString
 
 def ParseArgs():
@@ -34,7 +33,7 @@ def main(args):
     label_patch_size = getSizeFromString(args.label_patch_size)
 
     center = [0., 0., 0.]
-    print("Center: {}".format(center)
+    print("Center: {}".format(center))
     iace = ImageAndCoordinateExtractor(
             image = image, 
             label = label,
