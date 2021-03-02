@@ -1,13 +1,13 @@
 {
     "run_training" : {
-        "fold1" : true,
-        "fold2" : true,
-        "fold3" : true 
+        "fold1" : false,
+        "fold2" : false,
+        "fold3" : false 
     },
     "run_segmentation" : {
-        "fold1" : true,
-        "fold2" : true,
-        "fold3" : true
+        "fold1" : false,
+        "fold2" : false,
+        "fold3" : false 
         },
     "run_caluculation" : {
         "fold1" : true,
@@ -45,7 +45,7 @@
 	"gpu_ids" : 0, 
 	"api_key" : "IowbTppLPOohqhcDtzxw76Cot",
 	"project_name" : "abdomen",
-	"experiment_name" : "no_pad-116-132-132-1-3-origin-mask_nonmask",
+	"experiment_name" : "no_pad-116-132-132-1-3-origin",
     "train_mask_nonmask_rate" : "1.0 0.1",
     "val_mask_nonmask_rate" : "1.0 1.0",
 
@@ -55,11 +55,13 @@
   "image_patch_size" : "116-132-132",
   "label_patch_size" : "28-44-44",
   "overlap" : 1,
+  "class_axis" : 0,
   "image_name" : "imaging_resampled.nii.gz",
   "mask_name" : "No",
   "save_name" : "label.mha",
 
-  "csv_savedir" : "/sandisk/data/result/Abdomen/no_pad/coordinate/116-132-132-4/origin/mask_nonmask", 
+  "ignore_classes" : "6", 
+  "csv_savedir" : "/sandisk/data/result/Abdomen/no_pad/coordinate/116-132-132-1-3/origin/mask_nonmask", 
   "class_label" : "backGound spleen  rightKidney  leftKidney gallbladder esophagus liver stomach aorta inferiorVenaCava portalVeinAndSplenicVein pancreas rightAdrenalGland leftAdrenalGland",
   "true_name" : "segmentation_resampled.nii.gz",
   "predict_name" : "label.mha" 
