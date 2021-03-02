@@ -25,17 +25,11 @@ readonly RUN_SEGMENTATION=$(cat ${JSON_FILE} | jq -r ".run_segmentation")
 readonly RUN_CALUCULATION=$(cat ${JSON_FILE} | jq -r ".run_caluculation")
 
 # Training input
-readonly ADD_NONMASK=$(cat ${JSON_FILE} | jq -r ".add_nonmask")
 readonly DATASET_MASk_PATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".dataset_mask_path"))
 readonly DATASET_NONMASk_PATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".dataset_nonmask_path"))
 dataset_mask_path="${DATASET_MASk_PATH}/image"
 dataset_nonmask_path="${DATASET_NONMASk_PATH}/image"
-
-if ${ADD_NONMASK}; then
- save_directory="${DATASET_MASk_PATH}_nonmask/segmentation"
-else
- save_directory="${DATASET_MASk_PATH}/segmentation"
-fi
+save_directory="${DATASET_MASk_PATH}_nonmask/segmentation"
 
 readonly MODEL_SAVEPATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".model_savepath"))
 
@@ -62,11 +56,14 @@ readonly MODEL_NAME=$(eval echo $(cat ${JSON_FILE} | jq -r ".model_name"))
 readonly IMAGE_PATCH_SIZE=$(cat ${JSON_FILE} | jq -r ".image_patch_size")
 readonly LABEL_PATCH_SIZE=$(cat ${JSON_FILE} | jq -r ".label_patch_size")
 readonly OVERLAP=$(cat ${JSON_FILE} | jq -r ".overlap")
+readonly CLASS_AXIS=$(cat ${JSON_FILE} | jq -r ".class_axis")
 readonly IMAGE_NAME=$(cat ${JSON_FILE} | jq -r ".image_name")
+readonly LIVER_NAME=$(cat ${JSON_FILE} | jq -r ".liver_name")
 readonly MASK_NAME=$(cat ${JSON_FILE} | jq -r ".mask_name")
 readonly SAVE_NAME=$(cat ${JSON_FILE} | jq -r ".save_name")
 
 # Caluculation input
+readonly IGNORE_CLASSES=$(cat ${JSON_FILE} | jq -r ".ignore_classes")
 readonly CSV_SAVEDIR=$(eval echo $(cat ${JSON_FILE} | jq -r ".csv_savedir"))
 readonly CLASS_LABEL=$(cat ${JSON_FILE} | jq -r ".class_label")
 readonly TRUE_NAME=$(cat ${JSON_FILE} | jq -r ".true_name")
@@ -136,14 +133,18 @@ do
   for number in ${test_list[@]}
   do
    image="${DATA_DIRECTORY}/case_${number}/${IMAGE_NAME}"
+   liver="${DATA_DIRECTORY}/case_${number}/${LIVER_NAME}"
    save="${save_directory}/case_${number}/${SAVE_NAME}"
 
    echo "Image:${image}"
+   echo "Liver:${liver}"
    echo "Model:${model}"
    echo "Save:${save}"
    echo "IMAGE_PATCH_SIZE:${IMAGE_PATCH_SIZE}"
    echo "LABEL_PATCH_SIZE:${LABEL_PATCH_SIZE}"
    echo "OVERLAP:${OVERLAP}"
+   echo "NUM_CLASS:${NUM_CLASS}"
+   echo "CLASS_AXIS:${CLASS_AXIS}"
    echo "GPU_IDS:${GPU_IDS}"
 
 
@@ -157,7 +158,7 @@ do
     echo "Mask:${mask_path}"
    fi
 
-    python3 segmentation.py $image $model $save --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap $OVERLAP -g ${GPU_IDS} ${mask}
+    python3 segmentation.py $image $model $save --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap $OVERLAP -g ${GPU_IDS} ${mask} --num_class ${NUM_CLASS} --class_axis ${CLASS_AXIS}
 
    if [ $? -ne 0 ];then
     exit 1
@@ -179,6 +180,7 @@ CSV_SAVEPATH="${CSV_SAVEDIR}/${csv_name}.csv"
 echo "---------- Caluculation ----------"
 echo "TRUE_DIRECTORY:${DATA_DIRECTORY}"
 echo "PREDICT_DIRECTORY:${save_directory}"
+echo "IGNORE_CLASSES:${IGNORE_CLASSES}"
 echo "CSV_SAVEPATH:${CSV_SAVEPATH}"
 echo "All_patients:${all_patients[@]}"
 echo "NUM_CLASS:${NUM_CLASS}"
@@ -187,7 +189,7 @@ echo "TRUE_NAME:${TRUE_NAME}"
 echo "PREDICT_NAME:${PREDICT_NAME}"
 
 
-python3 caluculateDICE.py ${DATA_DIRECTORY} ${save_directory} ${CSV_SAVEPATH} ${all_patients} --classes ${NUM_CLASS} --class_label ${CLASS_LABEL} --true_name ${TRUE_NAME} --predict_name ${PREDICT_NAME} 
+python3 caluculateDICE.py ${DATA_DIRECTORY} ${save_directory} ${CSV_SAVEPATH} ${all_patients} --classes ${NUM_CLASS} --class_label ${CLASS_LABEL} --true_name ${TRUE_NAME} --predict_name ${PREDICT_NAME} --ignore_classes ${IGNORE_CLASSES}
 
 if [ $? -ne 0 ];then
  exit 1
