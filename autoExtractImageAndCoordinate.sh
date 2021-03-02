@@ -52,6 +52,7 @@ do
  echo "Save:${save}"
  echo "IMAGE_PATCH_SIZE:${IMAGE_PATCH_SIZE}"
  echo "LABEL_PATCH_SIZE:${LABEL_PATCH_SIZE}"
+ echo "Nonmask:${NONMASK}"
 
  if [ $MASK_NAME = "No" ];then
   echo "Mask:${MASK_PATH}"
@@ -62,7 +63,7 @@ do
   mask="--mask_path ${mask_path}"
  fi
 
- if [ $NONMASK ];then
+ if $NONMASK ;then
   nonmask="--nonmask"
 
  else

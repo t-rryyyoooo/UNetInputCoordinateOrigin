@@ -25,11 +25,17 @@ readonly RUN_SEGMENTATION=$(cat ${JSON_FILE} | jq -r ".run_segmentation")
 readonly RUN_CALUCULATION=$(cat ${JSON_FILE} | jq -r ".run_caluculation")
 
 # Training input
+readonly ADD_NONMASK=$(cat ${JSON_FILE} | jq -r ".add_nonmask")
 readonly DATASET_MASk_PATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".dataset_mask_path"))
 readonly DATASET_NONMASk_PATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".dataset_nonmask_path"))
 dataset_mask_path="${DATASET_MASk_PATH}/image"
 dataset_nonmask_path="${DATASET_NONMASk_PATH}/image"
-save_directory="${DATASET_MASk_PATH}/segmentation"
+
+if ${ADD_NONMASK}; then
+ save_directory="${DATASET_MASk_PATH}_nonmask/segmentation"
+else
+ save_directory="${DATASET_MASk_PATH}/segmentation"
+fi
 
 readonly MODEL_SAVEPATH=$(eval echo $(cat ${JSON_FILE} | jq -r ".model_savepath"))
 

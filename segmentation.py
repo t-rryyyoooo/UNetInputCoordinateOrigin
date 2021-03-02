@@ -4,13 +4,14 @@ sys.path.append("..")
 import numpy as np
 import argparse
 from pathlib import Path
+from imageAndCoordinateExtractor import ImageAndCoordinateExtractor
 from tqdm import tqdm
 import torch
 import cloudpickle
 from utils.machineLearning.segmentation import Segmenter
 from utils.utils import getImageWithMeta, getSizeFromString, isMasked
+from utils.coordinateProcessing.centerOfGravityCalculater import CenterOfGravityCalculater
 from imageAndCoordinateExtractor import ImageAndCoordinateExtractor
-from coordinateProcessing.centerOfGravityCalculater import CenterOfGravityCalculater
 
 
 def ParseArgs():

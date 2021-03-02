@@ -134,7 +134,6 @@ class ImageAndCoordinateExtractor():
             input_index = ipa[0]
             output_index = lpa[0]
             yield ipa[1], lpa[1], cpa[1], mpa[1], input_index, output_index
-
     def save(self, save_path, patient_id, with_nonmask=False):
         if not isinstance(patient_id, str):
             patient_id = str(patient_id)
@@ -179,7 +178,6 @@ class ImageAndCoordinateExtractor():
            
     def insertToPredictedArray(self, index, array):
         """ Insert predicted array (before argmax array) which has probability per class. """
-
         assert array.ndim == self.predicted_array.ndim
 
         predicted_slices = []

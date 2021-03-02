@@ -5,6 +5,7 @@ import json
 import argparse
 from pathlib import Path
 import sys
+sys.path.append("..")
 from model.UNet_no_pad_input_coord_with_nonmask.system import UNetSystem
 from model.UNet_no_pad_input_coord_with_nonmask.modelCheckpoint import BestAndLatestModelCheckpoint as checkpoint
 import time
@@ -53,8 +54,6 @@ def main(args):
             "val" : {"mask" : args.val_mask_nonmask_rate[0], "nonmask" : args.val_mask_nonmask_rate[1]}
             }
 
-    sys.path.append("..")
-
     system = UNetSystem(
             dataset_mask_path = args.dataset_mask_path,
             dataset_nonmask_path = args.dataset_nonmask_path,
@@ -99,8 +98,8 @@ def main(args):
  
     trainer.fit(system)
 
-    end = time.time()
-    message = "Training done. Time: {}".format(end - start)
+    end_time = time.time()
+    message = "Training done. Time: {}".format(end_time - start_time)
     sendToLineNotify(message)
 
 
