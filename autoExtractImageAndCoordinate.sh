@@ -25,15 +25,16 @@ readonly SAVE_DIRECTORY=$(eval echo $(cat ${JSON_FILE} | jq -r ".save_directory"
 readonly IMAGE_PATCH_SIZE=$(cat ${JSON_FILE} | jq -r ".image_patch_size")
 readonly LABEL_PATCH_SIZE=$(cat ${JSON_FILE} | jq -r ".label_patch_size")
 readonly OVERLAP=$(cat ${JSON_FILE} | jq -r ".overlap")
-readonly NONMASK=$(cat ${JSON_FILE} | jq -r ".nonmask")
+readonly NUM_CLASS=$(cat ${JSON_FILE} | jq -r ".num_class")
+readonly CLASS_AXIS=$(cat ${JSON_FILE} | jq -r ".class_axis")
+readonly OVERLAP=$(cat ${JSON_FILE} | jq -r ".overlap")
+readonly WITH_NONMASK=$(cat ${JSON_FILE} | jq -r ".with_nonmask")
 readonly NUM_ARRAY=$(cat ${JSON_FILE} | jq -r ".num_array[]")
 readonly LOG_FILE=$(eval echo $(cat ${JSON_FILE} | jq -r ".log_file"))
 readonly IMAGE_NAME=$(cat ${JSON_FILE} | jq -r ".image_name")
 readonly LABEL_NAME=$(cat ${JSON_FILE} | jq -r ".label_name")
 readonly MASK_NAME=$(cat ${JSON_FILE} | jq -r ".mask_name")
 
-echo "DATA_DIRECTORY:${DATA_DIRECTORY}"
-echo "SAVE_DIRECTORY:${SAVE_DIRECTORY}"
 echo "LOG_FILE:${LOG_FILE}"
 
 # Make directory to save LOG.
@@ -45,32 +46,37 @@ do
  data="${DATA_DIRECTORY}/case_${number}"
  image="${data}/${IMAGE_NAME}"
  label="${data}/${LABEL_NAME}"
- save="${SAVE_DIRECTORY}/case_${number}"
+ save="${SAVE_DIRECTORY}"
 
  echo "Image:${image}"
  echo "Label:${label}"
  echo "Save:${save}"
  echo "IMAGE_PATCH_SIZE:${IMAGE_PATCH_SIZE}"
  echo "LABEL_PATCH_SIZE:${LABEL_PATCH_SIZE}"
- echo "Nonmask:${NONMASK}"
+ echo "OVERLAP:${OVERLAP}"
+ echo "NUM_CLASS:${NUM_CLASS}"
+ echo "CLASS_AXIS:${CLASS_AXIS}"
+ echo "WITH_NONMASK:${WITH_NONMASK}"
 
  if [ $MASK_NAME = "No" ];then
-  echo "Mask:${MASK_PATH}"
+  echo "Mask:${MASK_NAME}"
   mask=""
+
  else
   mask_path="${data}/${MASK_NAME}"
   echo "Mask:${mask_path}"
   mask="--mask_path ${mask_path}"
+
+  if $WITH_NONMASK ;then
+   with_nonmask="--with_nonmask"
+
+  else
+   with_nonmask=""
+
+  fi
  fi
 
- if $NONMASK ;then
-  nonmask="--nonmask"
-
- else
-  nonmask=""
- fi
-
- python3 extractImageAndCoordinate.py ${image} ${label} ${save} --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap ${OVERLAP} ${mask} ${nonmask}
+ python3 extractImageAndCoordinate.py ${image} ${label} ${save} ${number} --image_patch_size ${IMAGE_PATCH_SIZE} --label_patch_size ${LABEL_PATCH_SIZE} --overlap ${OVERLAP} ${mask} ${with_nonmask} --num_class ${NUM_CLASS} --class_axis ${CLASS_AXIS}
 
  # Judge if it works.
  if [ $? -eq 0 ]; then
